@@ -2,6 +2,8 @@ const { exec } = require("child_process");
 var express = require('express');
 var app = express();
 
+app.set('view engine', 'ejs');
+
 function executeCommandAsynchronously() {
     const cmd = "ip addr";
 
@@ -26,8 +28,19 @@ app.get('/', function (req, res) {
     return executeCommandAsynchronously()
         .then(function(data) { 
             console.log(data);
-            return res.status(200).send(data); })
-        .catch(function(err) { return res.status(500).send(err); });
+            //return res.status(200).send(data); 
+            return res.render("pages/index", {
+                title: "Here is the response:",
+                response: data
+            })    
+        })
+        .catch(function(err) { 
+            //return res.status(500).send(err); 
+            return res.render("pages/index", {
+                title: "There was an error:",
+                response: err
+            }) 
+        });
 });
 
 app.listen(3000, function () {
